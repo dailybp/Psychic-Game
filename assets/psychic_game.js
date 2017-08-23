@@ -1,24 +1,36 @@
-$(function(){
+window.onload = function () {
   var alphabet = ['a','b','c','d','e','f','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
   'w','x','y','z'];
-  var guesses = 10;
+  var guessesLeft = 10;
   var wins = 0;
   var losses = 0;
   var guesses = 0;
   var listOfLettersGuessed = [];
-  var computerGuess = null;
+  var userGuess = null;
 
-  var updateGuessesLeft = function(){
-    document.querySelector('#guesses').innerHTML = "Number of Guesses Left: "+guesses;
-  };
+  var computerGuess = alphabet[Math.floor(Math.random()*alphabet.length)];
 
-  var updateGuessesSoFar = function(){
-    document.querySelector('#list').innerHTML = "Guesses so Far: " + listOfLettersGuessed;
-  };
+  console.log("Wins: " + wins + " Losses: " + losses + " Number of Guesses Left: " + guessesLeft + " Guesses So Far: " + listOfLettersGuessed + " Computer Guess: " + computerGuess);
 
-  var updateLetterToGuess = function(){
-    this.computerGuess = this.alphabet[Math.floor(Math.random()*alphabet.length)];
-  };
+  document.onkeyup = function(event){
+    var userGuess = String.fromCharCode(event.keyCode).toLowerCase();
+
+    if(listOfLettersGuessed.indexOf(userGuess)<0 && alphabet.indexOf(userGuess)>=0){
+      listOfLettersGuessed[listOfLettersGuessed.length] = userGuess;
+
+      guessesLeft--;
+    }
+
+    if(computerGuess === userGuess){
+      wins++;
+      console.log("Win!!!");
+    }
+
+    if(guessesLeft === 0){
+      losses++;
+      console.log("Loss");
+    }
+  }
 
   $("restart").on("click", function(){
     guesses = 10;
@@ -26,26 +38,5 @@ $(function(){
     updateLetterToGuess();
     updateGuessesSoFar();
     updateGuessesLeft();
-  };
-
-  $("guess").on("click",function(){
-    if(guesses > 0){
-      if('#letter' === random){
-        alert('You are correct, you maybe a psychic!!!');
-        wins++;
-        document.querySelector('#wins').innerHTML = "Wins: " + wins;
-        else{
-          alert('That is incorrect, try again.');
-          listOfLettersGuessed.append('#letter');
-          guesses--;
-        }
-      }
-      else{
-        losses++;
-        document.querySelector('#losses').innerHTML = "Losses: " + losses;
-        alert("Don't give up, you should try again.");
-        reset();
-      }
-    }
-  };
-};
+  });
+}
